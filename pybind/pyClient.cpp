@@ -28,20 +28,20 @@ void PYBIND11_INIT_CLASS_CLIENT(py::module_ &m)
         .def("getAbsoluteDbPath", &Client::getAbsoluteDbPath)
         .def("getAbsoluteDbGraphPath", &Client::getAbsoluteDbGraphPath)
         .def("load", &Client::load,
-             py::arg("uri"),  py::arg("classname") = "", py::arg("search_depth") = -1)
+             py::arg("uri"),  py::arg("classname") = "")
         .def("clear", &Client::clear)
         .def("remove", &Client::remove,
              py::arg("uri"))
         .def("add", py::overload_cast<std::vector<XTypePtr>, const int>(&Client::add),
-             py::arg("xtypes"), py::arg("depth_limit")=-1)
+             py::arg("xtypes"), py::arg("max_depth")=-1)
         .def("add", py::overload_cast<nl::json>(&Client::add),
              py::arg("xtypes"))
         .def("update", py::overload_cast<std::vector<XTypePtr>, const int>(&Client::update),
-             py::arg("xtypes"), py::arg("depth_limit")=-1)
+             py::arg("xtypes"), py::arg("max_depth")=-1)
         .def("update", py::overload_cast<nl::json>(&Client::update),
              py::arg("xtypes"))
         .def("find", &Client::find,
-             py::arg("classname") = "", py::arg("properties") = nl::json{}, py::arg("search_depth") = -1)
+             py::arg("classname") = "", py::arg("properties") = nl::json{})
         .def("uris", &Client::uris,
              py::arg("classname") = "", py::arg("properties") = nl::json{});
 }

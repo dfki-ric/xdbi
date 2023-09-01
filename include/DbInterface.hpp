@@ -14,11 +14,10 @@ namespace xdbi
     class DbInterface
     {
     public:
-        /// Empty Constructor for a DbInterface
-        DbInterface(const XTypeRegistryPtr registry): registry(registry) {};
-        /// Constructor
-        DbInterface(const XTypeRegistryPtr registry, const nl::json config, const bool read_only)
-            : registry(registry), config(config), read_only(read_only){};
+        /// Constructor with registry
+        DbInterface(const XTypeRegistryPtr registry);
+        /// Constructor with registry and config
+        DbInterface(const XTypeRegistryPtr registry, const nl::json config, const bool read_only);
 
         /*!
            \brief "Factory function. Instantiates a specific child of DbInterface from the passed config"
@@ -73,10 +72,9 @@ namespace xdbi
            \brief "Tries to load the XType specified via the passed uri. If classname is provided this limits the search area, and is therefore faster."
            \param "The uri of the XType to load"
            \param "(optional) The classname of the XType to load, if known"
-           \param "the depth to search in the database"
            \return "The XType instance if found otherwise nullptr"
         */
-        virtual XTypePtr load(const std::string &uri, const std::string &classname = "", const int search_depth=-1) = 0;
+        virtual XTypePtr load(const std::string &uri, const std::string &classname = "") = 0;
         /*!
            \brief "Deletes all entries in the current working graph/directory"
         */
@@ -90,9 +88,8 @@ namespace xdbi
         /*!
            \brief "Adds the passed XType instance to the database in the current working graph"
            \param xtypes "A vector of Xtypes to be added to the database"
-           \param depth_limit "A limit of the depth at which things get added to the database"
         */
-        virtual bool add(std::vector<XTypePtr> xtypes, const int depth_limit=-1) = 0;
+        virtual bool add(std::vector<XTypePtr> xtypes, const int max_depth=-1) = 0;
         // 20220712 MS: Who is using the JSON variant?
         /*!
            \brief "Adds the passed XType instance to the database in the current working graph"
@@ -104,7 +101,7 @@ namespace xdbi
            \param xtypes "A vector of Xtypes to be added to the database"
            \param depth_limit "A limit of the depth at which things get updated in the database"
         */
-        virtual bool update(std::vector<XTypePtr> xtypes, const int depth_limit=-1) = 0;
+        virtual bool update(std::vector<XTypePtr> xtypes, const int max_depth=-1) = 0;
         // 20220712 MS: Who is using the JSON variant?
         /*!
            \brief "Updates the passed json representation of a XType instance to the database in the current working graph"
@@ -115,10 +112,9 @@ namespace xdbi
           \brief "Loads all xtypes that match the passed classname and properties and returns them as vector. If classname is provided this limits the search area, and is therefore faster."
           \param "The classname of the XType to load"
           \param "Certain properties the XType(s) to be retrieved have to have"
-          \param "the depth to search in the database"
           \return "a vector of matching XType instances"
         */
-        virtual std::vector<XTypePtr> find(const std::string &classname="", const nl::json &properties=nl::json{}, const int search_depth=-1) = 0;
+        virtual std::vector<XTypePtr> find(const std::string &classname="", const nl::json &properties=nl::json{}) = 0;
 
         /*
          * \brief "Returns a list of all uris present in the database"

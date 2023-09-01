@@ -9,6 +9,23 @@
 using namespace xtypes;
 using namespace xdbi;
 
+xdbi::DbInterface::DbInterface(const XTypeRegistryPtr registry)
+    : registry(registry)
+{
+    // Here we will provide the registry with an autoload function to load any XType(s) by uri
+    auto auto_loader = [&](const std::string& _uri) -> XTypePtr {
+        return load(_uri);
+    };
+    this->registry.lock()->set_load_func(auto_loader);
+}
+
+xdbi::DbInterface::DbInterface(const XTypeRegistryPtr registry, const nl::json config, const bool read_only)
+    : DbInterface(registry)
+{
+    this->config = config;
+    this->read_only = read_only;
+}
+
 void xdbi::DbInterface::setLoggerLevel(std::string level, bool verbose)
 {
     Logger::setLoggerLevel(level);

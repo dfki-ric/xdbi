@@ -50,6 +50,7 @@ void xdbi::Server::stop()
         server->stop();
     LOGI("Server at " << dbAddress << ':' << dbPort << " stopped! ^__^");
 }
+
 crow::response xdbi::Server::ping(const crow::request &req, const nl::json &dbRequest)
 {
     try

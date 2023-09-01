@@ -40,19 +40,12 @@ bool xdbi::Serverless::isReady()
 
 }
 
-XTypePtr xdbi::Serverless::load(const std::string &uri, const std::string &classname, const int search_depth)
+XTypePtr xdbi::Serverless::load(const std::string &uri, const std::string &classname)
 {
     this->checkReadiness();
-    ImportByURIFunc db_callback = [=](std::string _uri) -> nl::json
-    {
-        return this->backend->load(_uri);
-    };
+    nl::json spec = this->backend->load(uri);
 
-    return XType::import_from(
-        uri,
-        db_callback,
-        *this->registry.lock(),
-        search_depth);
+    return XType::import_from(spec, registry.lock());
 }
 
 bool xdbi::Serverless::clear()
@@ -68,16 +61,18 @@ bool xdbi::Serverless::remove(const std::string &uri)
     return this->backend->remove(uri);
 }
 
-bool xdbi::Serverless::add(std::vector<XTypePtr> xtypes, const int depth_limit)
+bool xdbi::Serverless::add(std::vector<XTypePtr> xtypes, const int max_depth)
 {
     this->checkReadiness();
     this->checkWriteable();
     nl::json models;
     for (auto xtype : xtypes)
     {
-        URI2Spec spec = xtype->export_to(depth_limit, true);
-        for (const auto &[_, model] : spec)
-            models.push_back(model);
+        std::map< std::string, nl::json> specs = xtype->export_to(max_depth);
+        for (const auto &[_,spec] : specs)
+        {
+            models.push_back(spec);
+        }
     }
     return this->add(models);
 }
@@ -89,16 +84,18 @@ bool xdbi::Serverless::add(nl::json xtypes)
     return this->backend->add(xtypes);
 }
 
-bool xdbi::Serverless::update(std::vector<XTypePtr> xtypes, const int depth_limit)
+bool xdbi::Serverless::update(std::vector<XTypePtr> xtypes, const int max_depth)
 {
     this->checkReadiness();
     this->checkWriteable();
     nl::json models;
     for (const auto &xtype : xtypes)
     {
-        URI2Spec spec = xtype->export_to(depth_limit, true);
-        for (const auto &[_, model] : spec)
-            models.push_back(model);
+        std::map< std::string, nl::json> specs = xtype->export_to(max_depth);
+        for (const auto &[_,spec] : specs)
+        {
+            models.push_back(spec);
+        }
     }
     return this->update(models);
 }
@@ -110,7 +107,7 @@ bool xdbi::Serverless::update(nl::json xtypes)
     return this->backend->update(xtypes);
 }
 
-std::vector<XTypePtr> xdbi::Serverless::find(const std::string &classname, const nl::json &properties, const int search_depth)
+std::vector<XTypePtr> xdbi::Serverless::find(const std::string &classname, const nl::json &properties)
 {
     this->checkReadiness();
     nl::json models = this->backend->find(
@@ -119,7 +116,7 @@ std::vector<XTypePtr> xdbi::Serverless::find(const std::string &classname, const
     std::vector<XTypePtr> out;
     out.reserve(models.size());
     std::transform(models.begin(), models.end(), std::back_inserter(out), [&](nl::json &model)
-                   { return this->load(model["uri"], model["classname"], search_depth); });
+                   { return this->load(model["uri"], model["classname"]); });
     return out;
 }
 

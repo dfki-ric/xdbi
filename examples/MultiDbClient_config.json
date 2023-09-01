@@ -1,5 +1,6 @@
 {
   "main_server": {
+    "name": "main_server (write)",
     "type": "Serverless",
     "path": "${TEST_DB_PATH}",
     "graph": "graph_test"
@@ -10,6 +11,12 @@
       "type": "Client",
       "url": "http://localhost:8183/",
       "graph": "graph_production"
+    },
+    {
+      "name": "main_server (read)",
+      "type": "Serverless",
+      "path": "${TEST_DB_PATH}",
+      "graph": "graph_test"
     },
     {
       "name": "my_serverless",

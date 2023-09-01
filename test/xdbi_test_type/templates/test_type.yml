@@ -15,3 +15,4 @@ relations:
         type: HAS
         other_classnames:
             - TestType
+    # TODO: Add the inverse relation

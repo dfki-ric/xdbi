@@ -85,30 +85,24 @@ std::string xdbi::Client::getAbsoluteDbPath()
     return protocol + out;
 }
 
-XTypePtr xdbi::Client::load(const std::string &uri, const std::string &classname, const int search_depth)
+XTypePtr xdbi::Client::load(const std::string &uri, const std::string &classname)
 {
     this->checkReadiness();
-    ImportByURIFunc db_callback = [=](const std::string& _uri) -> nl::json
-    {
-        nl::json dbRequest;
-        dbRequest["graph"] = getWorkingGraph();
-        dbRequest["type"] = "load";
-        dbRequest["uri"] = _uri;
-        const auto r = cpr::Post(cpr::Url(dbAddress + "/"),
-                           cpr::Body{{dbRequest.dump()}},
-                           cpr::Header{{"content-type", "application/json"}});
-        if (r.status_code == 0)
-        {
-            throw std::runtime_error("Client::load() db_callback: No response from server. Is it running?");
-        }
-        return xtypes::parseJson(r.text)["result"];
-    };
 
-    return XType::import_from(
-        uri,
-        db_callback,
-        *this->registry.lock(),
-        search_depth);
+    nl::json dbRequest;
+    dbRequest["graph"] = getWorkingGraph();
+    dbRequest["type"] = "load";
+    dbRequest["uri"] = uri;
+    const auto r = cpr::Post(cpr::Url(dbAddress + "/"),
+                       cpr::Body{{dbRequest.dump()}},
+                       cpr::Header{{"content-type", "application/json"}});
+    if (r.status_code == 0)
+    {
+        throw std::runtime_error("Client::load() No response from server. Is it running?");
+    }
+    nl::json spec = xtypes::parseJson(r.text)["result"];
+
+    return XType::import_from(spec, registry.lock());
 }
 
 bool xdbi::Client::clear()
@@ -168,17 +162,17 @@ bool xdbi::Client::add(nl::json xtypes)
     return response["status"].get<std::string>() == "finished";
 }
 
-bool xdbi::Client::add(std::vector<XTypePtr> xtypes, const int depth_limit)
+bool xdbi::Client::add(std::vector<XTypePtr> xtypes, const int max_depth)
 {
     this->checkReadiness();
     this->checkWriteable();
     nl::json models;
     for (auto xtype : xtypes)
     {
-        URI2Spec spec = xtype->export_to(depth_limit,true);
-        for (const auto &[_, model] : spec)
+        std::map< std::string, nl::json> specs = xtype->export_to(max_depth);
+        for (const auto &[_,spec] : specs)
         {
-            models.push_back(model);
+            models.push_back(spec);
         }
     }
     return this->add(models);
@@ -204,23 +198,23 @@ bool xdbi::Client::update(nl::json xtypes)
     return response["status"].get<std::string>() == "finished";
 }
 
-bool xdbi::Client::update(std::vector<XTypePtr> xtypes, const int depth_limit)
+bool xdbi::Client::update(std::vector<XTypePtr> xtypes, const int max_depth)
 {
     this->checkReadiness();
     this->checkWriteable();
     nl::json models;
     for (const auto &xtype : xtypes)
     {
-        URI2Spec spec = xtype->export_to(depth_limit, true);
-        for (const auto &[_, model] : spec)
+        std::map< std::string, nl::json> specs = xtype->export_to(max_depth);
+        for (const auto &[_,spec] : specs)
         {
-            models.push_back(model);
+            models.push_back(spec);
         }
     }
     return this->update(models);
 }
 
-std::vector<XTypePtr> xdbi::Client::find(const std::string &classname, const nl::json &properties, const int search_depth)
+std::vector<XTypePtr> xdbi::Client::find(const std::string &classname, const nl::json &properties)
 {
     this->checkReadiness();
     nl::json dbRequest;
@@ -239,7 +233,7 @@ std::vector<XTypePtr> xdbi::Client::find(const std::string &classname, const nl:
     std::vector<XTypePtr> out;
     out.reserve(models.size());
     std::transform(models.begin(), models.end(), std::back_inserter(out), [&](const nl::json &model)
-                   { return this->load(model["uri"], model["classname"], search_depth); });
+                   { return this->load(model["uri"], model["classname"]); });
     return out;
 }
 
