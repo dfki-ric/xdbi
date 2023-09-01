@@ -1,0 +1,24 @@
+<package>
+    <description brief="XDBIPP: C++ X-Rock-Database interface">
+        This package gives a C++ interface to the X-Rock-database
+    </description>
+    <author>Modkom Team</author>
+    <author>modkom@dfki.de</author>
+    <maintainer>Henning Wiedemann/henning.wiedemann@dfki.de</maintainer>
+    <copyright></copyright>
+    <license></license>
+    <depend package="representation/xtypes_generator" />
+    <depend package="external/cpr" />
+    <depend package="nlohmann-json" />
+    <depend package="libspdlog" />
+    <depend package="pybind11" />
+    <depend package="pybind11_json" />
+    <stage>0</stage>
+    <activity>active</activity>
+    <keywords>
+        <keyword>utilities</keyword>
+        <keyword>interface</keyword>
+        <keyword>database</keyword>
+        <keyword>xtypes</keyword>
+    </keywords>
+</package>

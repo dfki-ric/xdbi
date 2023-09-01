@@ -1,0 +1,19 @@
+{
+  "main_server": {
+    "type": "Serverless",
+    "path": "YOUR_LOCAL_DATABASE_PATH",
+    "graph": "YOUR_GRAPH_OR_NAMESPACE_NAME"
+  },
+  "import_servers": [
+    {
+      "type": "Client",
+      "url": "SERVER_URL_WITH_PORT",
+      "graph": "YOUR_GRAPH_OR_NAMESPACE_NAME"
+    },
+    {
+      "type": "Serverless",
+      "path": "YOUR_LOCAL_DATABASE_PATH",
+      "graph": "YOUR_GRAPH_OR_NAMESPACE_NAME"  
+    }
+  ]
+}

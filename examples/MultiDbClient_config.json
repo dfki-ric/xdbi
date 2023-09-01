@@ -1,0 +1,23 @@
+{
+  "main_server": {
+    "type": "Serverless",
+    "path": "${TEST_DB_PATH}",
+    "graph": "graph_test"
+  },
+  "import_servers": [
+    {
+      "name": "my_client",
+      "type": "Client",
+      "url": "http://localhost:8183/",
+      "graph": "graph_production"
+    },
+    {
+      "name": "my_serverless",
+      "type": "Serverless",
+      "path": "${TEST_DB_PATH2}",
+      "graph": "graph_production"
+    }
+  ]
+}
+
+

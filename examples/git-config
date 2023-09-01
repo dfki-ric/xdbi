@@ -1,0 +1,3 @@
+[merge "json"]
+    name = Merge JSON files
+    driver = xdbi-json-merge %O %A %B

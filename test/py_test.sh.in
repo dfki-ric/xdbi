@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+echo @CMAKE_CURRENT_BINARY_DIR@
+jsondb --db_path @TEST_DB_PATH@ & JSONDB_PID=$!
+sleep 3
+echo "Started jsondb server with PID ${JSONDB_PID}"
+cd @CMAKE_CURRENT_SOURCE_DIR@
+TEST_DB_PATH=@TEST_DB_PATH@ TEST_DB_PATH=@TEST_DB_PATH2@ TEST_MULTIDB_CONFIG=@TEST_MULTIDB_CONFIG@ @PYTHON@ -m unittest test_*.py
+kill -9 ${JSONDB_PID}
