@@ -1,6 +1,6 @@
 # XDBI
 
-This repository contains the database interface and backends to store, search and retrieve e.g. [XTypes](https://git.hb.dfki.de/dfki-representation/x-rock-database/xtypes).
+This repository contains the database interface and backends to store, search and retrieve e.g. [XTypes](https://github.com/dfki-ric/xtypes).
 
 XDBI was initiated and is currently developed at the
 [Robotics Innovation Center](http://robotik.dfki-bremen.de/en/startpage.html) of the
@@ -8,7 +8,7 @@ XDBI was initiated and is currently developed at the
 together with the [Robotics Group](http://www.informatik.uni-bremen.de/robotik/index_en.php)
 of the [University of Bremen](http://www.uni-bremen.de/en.html).
 
-XDBI provides the database interface, for all types generated with the [xtypes_generator](https://git.hb.dfki.de/dfki-representation/x-rock-database/xtypes_generator).
+XDBI provides the database interface, for all types generated with the [xtypes_generator](https://github.com/dfki-ric/xtypes_generator).
 
 ## Installation
 ### Dependencies
