@@ -39,6 +39,7 @@ namespace xdbi
         std::vector<XTypePtr> find(const std::string &classname="", const nl::json &properties=nl::json{}) override;
         std::set<std::string> uris(const std::string &classname="", const nl::json &properties=nl::json{}) override;
 
+        void setWriteableServer(const std::string &serverName);
         /// Returns the DbInterface which holds the XType with the given URI. Searches in the order as the DbInterfaces are defined in the config, starting with the main interface.
         const DbInterfacePtr fromWhichDb(const std::string &uri);
 
@@ -52,6 +53,7 @@ namespace xdbi
         std::vector< DbInterfacePtr > import_interfaces;
         nl::json multi_config;
 
+        DbInterfacePtr writable_interface; // To store a reference to the writable database either one of import or main server
     };
 
 }

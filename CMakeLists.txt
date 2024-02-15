@@ -3,13 +3,6 @@ cmake_minimum_required(VERSION 3.10)
 project(xdbi VERSION 2.0.0 DESCRIPTION "Database interface to the XTypes Database")
 include(${CMAKE_SOURCE_DIR}/cmake/xdbi-dependencies.cmake)
 
-option(MAKE_MAIN_SERVER_WRITE_ONLY
-  "If turned off load, find and findAll of MultiDB will as last step in the look-up
-  order always check the main_server, otherwise only when the main_server is also listed
-  under import_servers"
-  On
-)
-
 # Export the library interface
 install(EXPORT xdbi-targets
 	NAMESPACE xdbi::
@@ -47,10 +40,6 @@ add_library(xdbi_cpp SHARED
   src/Serverless.cpp
 )
 target_compile_features(xdbi_cpp PUBLIC cxx_std_17)
-
-if(MAKE_MAIN_SERVER_WRITE_ONLY)
-  target_compile_definitions(xdbi_cpp PRIVATE MAIN_SERVER_WRITE_ONLY)
-endif()
 
 target_include_directories(xdbi_cpp
   PUBLIC
