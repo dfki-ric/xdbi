@@ -24,6 +24,8 @@ xdbi::MultiDbClient::MultiDbClient(const XTypeRegistryPtr registry, const nl::js
     {
         main_interface = DbInterface::from_config(registry, multi_config["main_server"], false);
     }
+    this->also_lookup_main_server = multi_config.contains("also_lookup_main_server") ? multi_config["also_lookup_main_server"].get<bool>() : false;
+    
     // We have to create our own load function here, because the others before have overwritten ours
     auto auto_loader = [&](const std::string& _uri) -> XTypePtr {
         return load(_uri);
@@ -108,12 +110,9 @@ XTypePtr xdbi::MultiDbClient::load(const std::string &uri, const std::string &cl
         if (found)
             break;
     }
-#ifndef MAIN_SERVER_WRITE_ONLY
-    // If the main interface is not listed under import_servers it is a write only interface.
-    // REVIEW: with the following lines we could have the main server as fall back
-    if (!found)// If not yet found we look (again) into the main database ...
+    if (!found && also_lookup_main_server) // If not yet found we look (again) into the main database ...
         found = main_interface->load(uri, classname);
-#endif
+
     return found;
 }
 
@@ -167,15 +166,18 @@ std::vector<XTypePtr> xdbi::MultiDbClient::find(const std::string &classname, co
             known.insert(_uri);
         }
     }
-#ifndef MAIN_SERVER_WRITE_ONLY
-    // If the main interface is not listed under import_servers it is a write only interface.
-    // REVIEW: with the following lines we could have the main server as fall back
-    interface_out = main_interface->find(classname, properties, search_depth);
-    for (auto& xtype : interface_out)
+    if (also_lookup_main_server)
     {
-        known.insert(xtype->uri());
+        interface_out = main_interface->find(classname, properties);
+        for (auto &xtype : interface_out)
+        {
+            const std::string &_uri(xtype->uri());
+            if (known.count(_uri))
+                continue;
+            out.push_back(xtype);
+            known.insert(_uri);
+        }
     }
-#endif
     // In the end, we have all matching xtypes in the result but no duplicate Xtypes
     return out;
 }
@@ -193,15 +195,14 @@ std::vector< std::pair< XTypePtr, DbInterfacePtr > > xdbi::MultiDbClient::findAl
             out.push_back( { xtype, interface } );
         }
     }
-#ifndef MAIN_SERVER_WRITE_ONLY
-    // If the main interface is not listed under import_servers it is a write-only interface.
-    // REVIEW: with the following lines we could have the main server as fall back
-    std::vector<XTypePtr> main_out = main_interface->find(classname, properties);
-    for (auto& xtype : main_out)
+    if (also_lookup_main_server)
     {
-        out.push_back( { xtype, main_interface } );
+        std::vector<XTypePtr> main_out = main_interface->find(classname, properties);
+        for (auto &xtype : main_out)
+        {
+            out.push_back({xtype, main_interface});
+        }
     }
-#endif
     return out;
 }
 

@@ -45,13 +45,13 @@ namespace xdbi
         /// Returns all Xtypes matching a given signature and the database it has been found in.
         /// NOTE: The returned XTypes could be duplicates
         std::vector< std::pair< XTypePtr, DbInterfacePtr > > findAll(const std::string &classname="", const nl::json &properties=nl::json{});
-
+        
 
     private:
         DbInterfacePtr main_interface;
         std::vector< DbInterfacePtr > import_interfaces;
         nl::json multi_config;
-
+        bool also_lookup_main_server = false;
     };
 
 }
