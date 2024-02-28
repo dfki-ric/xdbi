@@ -42,5 +42,6 @@ void PYBIND11_INIT_CLASS_MULTIDBCLIENT(py::module_ &m)
         .def("fromWhichDb", &MultiDbClient::fromWhichDb,
              py::arg("uri") = "")
         .def("findAll", &MultiDbClient::findAll,
-             py::arg("classname") = "", py::arg("properties") = nl::json{});
+             py::arg("classname") = "", py::arg("properties") = nl::json{})
+        .def("getMainInterface", &MultiDbClient::getMainInterface);
 }

@@ -46,6 +46,7 @@ namespace xdbi
         /// NOTE: The returned XTypes could be duplicates
         std::vector< std::pair< XTypePtr, DbInterfacePtr > > findAll(const std::string &classname="", const nl::json &properties=nl::json{});
 
+        const DbInterfacePtr getMainInterface();
 
     private:
         DbInterfacePtr main_interface;
