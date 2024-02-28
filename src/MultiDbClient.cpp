@@ -108,12 +108,6 @@ XTypePtr xdbi::MultiDbClient::load(const std::string &uri, const std::string &cl
         if (found)
             break;
     }
-#ifndef MAIN_SERVER_WRITE_ONLY
-    // If the main interface is not listed under import_servers it is a write only interface.
-    // REVIEW: with the following lines we could have the main server as fall back
-    if (!found)// If not yet found we look (again) into the main database ...
-        found = main_interface->load(uri, classname);
-#endif
     return found;
 }
 
@@ -167,15 +161,6 @@ std::vector<XTypePtr> xdbi::MultiDbClient::find(const std::string &classname, co
             known.insert(_uri);
         }
     }
-#ifndef MAIN_SERVER_WRITE_ONLY
-    // If the main interface is not listed under import_servers it is a write only interface.
-    // REVIEW: with the following lines we could have the main server as fall back
-    interface_out = main_interface->find(classname, properties, search_depth);
-    for (auto& xtype : interface_out)
-    {
-        known.insert(xtype->uri());
-    }
-#endif
     // In the end, we have all matching xtypes in the result but no duplicate Xtypes
     return out;
 }
@@ -193,22 +178,13 @@ std::vector< std::pair< XTypePtr, DbInterfacePtr > > xdbi::MultiDbClient::findAl
             out.push_back( { xtype, interface } );
         }
     }
-#ifndef MAIN_SERVER_WRITE_ONLY
-    // If the main interface is not listed under import_servers it is a write-only interface.
-    // REVIEW: with the following lines we could have the main server as fall back
-    std::vector<XTypePtr> main_out = main_interface->find(classname, properties);
-    for (auto& xtype : main_out)
-    {
-        out.push_back( { xtype, main_interface } );
-    }
-#endif
     return out;
 }
 
 std::set<std::string> xdbi::MultiDbClient::uris(const std::string &classname, const nl::json &properties)
 {
     // When we look for all uris, we use a set to simply merge them (no duplicates)
-    std::set<std::string> results = main_interface->uris(classname, properties);
+    std::set<std::string> results;
     for (auto &interface : import_interfaces)
     {
         std::set<std::string> _out = interface->uris(classname, properties);
@@ -219,8 +195,6 @@ std::set<std::string> xdbi::MultiDbClient::uris(const std::string &classname, co
 
 const DbInterfacePtr xdbi::MultiDbClient::fromWhichDb(const std::string &uri)
 {
-    if (main_interface->load(uri))
-        return main_interface;
     for (auto &interface : import_interfaces)
     {
         if (interface->load(uri))

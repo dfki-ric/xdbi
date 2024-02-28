@@ -39,7 +39,7 @@ namespace xdbi
         std::vector<XTypePtr> find(const std::string &classname="", const nl::json &properties=nl::json{}) override;
         std::set<std::string> uris(const std::string &classname="", const nl::json &properties=nl::json{}) override;
 
-        /// Returns the DbInterface which holds the XType with the given URI. Searches in the order as the DbInterfaces are defined in the config, starting with the main interface.
+        /// Returns the DbInterface which holds the XType with the given URI (first match in order of import server list)
         const DbInterfacePtr fromWhichDb(const std::string &uri);
 
         /// Returns all Xtypes matching a given signature and the database it has been found in.
