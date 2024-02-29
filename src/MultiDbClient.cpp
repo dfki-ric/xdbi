@@ -192,14 +192,7 @@ std::set<std::string> xdbi::MultiDbClient::uris(const std::string &classname, co
     return results;
 }
 
-const DbInterfacePtr xdbi::MultiDbClient::fromWhichDb(const std::string &uri)
 {
-    for (auto &interface : import_interfaces)
-    {
-        if (interface->load(uri))
-            return interface;
-    }
-    return nullptr;
 }
 
 const DbInterfacePtr xdbi::MultiDbClient::getMainInterface()
