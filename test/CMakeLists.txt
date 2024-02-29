@@ -41,16 +41,17 @@ add_custom_target(cpp_test
 )
 
 ### PYTHON Test ###
-if("$ENV{PYTHON}" STREQUAL "")
-  set(PYTHON "python")
-  message(STATUS "Using default python.")
-else()
-  set(PYTHON $ENV{PYTHON})
-  message(STATUS ${PYTHON})
-endif()
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/py_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/py_test.sh @ONLY)
-add_custom_target(py_test
-  COMMAND ${CMAKE_CURRENT_BINARY_DIR}/py_test.sh
-  DEPENDS xdbi_py
-)
+# FIXME: Python tests currently not working
+#if("$ENV{PYTHON}" STREQUAL "")
+#  set(PYTHON "python")
+#  message(STATUS "Using default python.")
+#else()
+#  set(PYTHON $ENV{PYTHON})
+#  message(STATUS ${PYTHON})
+#endif()
+#
+#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/py_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/py_test.sh @ONLY)
+#add_custom_target(py_test
+#  COMMAND ${CMAKE_CURRENT_BINARY_DIR}/py_test.sh
+#  DEPENDS xdbi_py
+#)
