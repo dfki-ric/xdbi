@@ -16,9 +16,6 @@ xdbi::MultiDbClient::MultiDbClient(const XTypeRegistryPtr registry, const nl::js
 
     for (auto &db_cfg : this->multi_config["import_servers"])
     {
-        // FIXME: 2024-02-28 MS: This name is never used nor used to distinguish between import servers ... Can it be removed?
-        if(!db_cfg.contains("name")) // we need a unique identifier (name) to distinguish between import_servers when setting/getting graph
-            db_cfg["name"] = "import_server_" + std::to_string(import_interfaces.size()+1);
         import_interfaces.push_back(DbInterface::from_config(registry, db_cfg, true));
     }
     if (multi_config.contains("main_server") && !multi_config["main_server"].empty())
