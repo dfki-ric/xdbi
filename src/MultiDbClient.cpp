@@ -192,10 +192,12 @@ std::set<std::string> xdbi::MultiDbClient::uris(const std::string &classname, co
     return results;
 }
 
-{
-}
-
 const DbInterfacePtr xdbi::MultiDbClient::getMainInterface()
 {
     return main_interface;
+}
+
+std::vector< DbInterfacePtr > xdbi::MultiDbClient::getImportInterfaces()
+{
+    return import_interfaces;
 }
