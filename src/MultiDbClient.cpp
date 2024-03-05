@@ -161,22 +161,6 @@ std::vector<XTypePtr> xdbi::MultiDbClient::find(const std::string &classname, co
     return out;
 }
 
-std::vector< std::pair< XTypePtr, DbInterfacePtr > > xdbi::MultiDbClient::findAll(const std::string &classname, const nl::json &properties)
-{
-    // This special function gathers all matching XType(s) across the database(s)
-    // Therefore, we also have to return the source of the found XType(s)
-    std::vector< std::pair< XTypePtr, DbInterfacePtr > > out;
-    for (auto &interface : import_interfaces)
-    {
-        std::vector<XTypePtr> imported_out = interface->find(classname, properties);
-        for (auto& xtype : imported_out)
-        {
-            out.push_back( { xtype, interface } );
-        }
-    }
-    return out;
-}
-
 std::set<std::string> xdbi::MultiDbClient::uris(const std::string &classname, const nl::json &properties)
 {
     // When we look for all uris, we use a set to simply merge them (no duplicates)

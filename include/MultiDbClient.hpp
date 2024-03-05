@@ -40,9 +40,6 @@ namespace xdbi
         std::vector<XTypePtr> find(const std::string &classname="", const nl::json &properties=nl::json{}) override;
         std::set<std::string> uris(const std::string &classname="", const nl::json &properties=nl::json{}) override;
 
-        // All matches semantics: Will return all matches in any of the import_interfaces list
-        std::vector< std::pair< XTypePtr, DbInterfacePtr > > findAll(const std::string &classname="", const nl::json &properties=nl::json{});
-
         // Getters for interfaces
         const DbInterfacePtr getMainInterface();
         std::vector< DbInterfacePtr > getImportInterfaces();
