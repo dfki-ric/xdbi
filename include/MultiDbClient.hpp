@@ -29,6 +29,7 @@ namespace xdbi
 
         bool isReady() override;
 
+        // First match semantics: Will return the first match in order of the import_interfaces list
         XTypePtr load(const std::string &uri, const std::string &classname = "") override;
         bool clear() override;
         bool remove(const std::string &uri) override;
@@ -39,13 +40,9 @@ namespace xdbi
         std::vector<XTypePtr> find(const std::string &classname="", const nl::json &properties=nl::json{}) override;
         std::set<std::string> uris(const std::string &classname="", const nl::json &properties=nl::json{}) override;
 
-        /// Returns the DbInterface which holds the XType with the given URI. Searches in the order as the DbInterfaces are defined in the config, starting with the main interface.
-        const DbInterfacePtr fromWhichDb(const std::string &uri);
-
-        /// Returns all Xtypes matching a given signature and the database it has been found in.
-        /// NOTE: The returned XTypes could be duplicates
-        std::vector< std::pair< XTypePtr, DbInterfacePtr > > findAll(const std::string &classname="", const nl::json &properties=nl::json{});
-
+        // Getters for interfaces
+        const DbInterfacePtr getMainInterface();
+        std::vector< DbInterfacePtr > getImportInterfaces();
 
     private:
         DbInterfacePtr main_interface;
