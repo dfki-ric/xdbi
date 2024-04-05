@@ -18,6 +18,10 @@ xdbi::MultiDbClient::MultiDbClient(const XTypeRegistryPtr registry, const nl::js
     {
         import_interfaces.push_back(DbInterface::from_config(registry, db_cfg, true));
     }
+    // 20240405 MS: We change the semantics of how load() and find() work internally
+    // To be downward compatible with existing configurations, we have to reverse the import_interfaces vector
+    // In effect the first/high prioritized interface will become the last but still it will win any conflict cases against the previous ones
+    std::reverse(import_interfaces.begin(), import_interfaces.end());
     if (multi_config.contains("main_server") && !multi_config["main_server"].empty())
     {
         main_interface = DbInterface::from_config(registry, multi_config["main_server"], false);
@@ -96,15 +100,18 @@ bool xdbi::MultiDbClient::isReady()
 
 XTypePtr xdbi::MultiDbClient::load(const std::string &uri, const std::string &classname)
 {
-    XTypePtr found;
+    XTypePtr last_found;
     // We search the import databases in the look-up order specified by the order of interfaces in import_servers
     for (auto &interface : import_interfaces)
     {
-        found = interface->load(uri, classname);
+        XTypePtr found(interface->load(uri, classname));
+        // 20240405 MS: We cannot break any longer and have to load any match in any of the import interfaces
+        // The last match will win (overwrite already found stuff).
+        // Since we have reversed the import_interfaces before, this change should not be visible to the user
         if (found)
-            break;
+            last_found = found;
     }
-    return found;
+    return last_found;
 }
 
 bool xdbi::MultiDbClient::clear()
