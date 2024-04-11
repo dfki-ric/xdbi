@@ -2,18 +2,28 @@
     <description brief="XDBIPP: C++ X-Rock-Database interface">
         This package gives a C++ interface to the X-Rock-database
     </description>
-    <author>Modkom Team</author>
-    <author>modkom@dfki.de</author>
-    <maintainer>Henning Wiedemann/henning.wiedemann@dfki.de</maintainer>
-    <copyright></copyright>
-    <license></license>
+    <!-- Authors -->
+    <author email="henning.wiedemann@dfki.de">Henning Wiedemann</author>
+    <author email="moritz.schilling@dfki.de">Moritz Schilling</author>
+    <author email="priyanka.chowdhury@dfki.de">Priyanka Chowdhury</author>
+    <author email="malte.langosz@dfki.de">Malte Langosz </author>
+    <!-- Maintainers -->
+    <maintainer email="henning.wiedemann@dfki.de">Henning Wiedemann</maintainer>
+    <maintainer email="moritz.schilling@dfki.de">Moritz Schilling</maintainer>
+    <maintainer email="priyanka.chowdhury@dfki.de">Priyanka Chowdhury</maintainer>
+    <maintainer email="malte.langosz@dfki.de">Malte Langosz </maintainer>
+    <!-- Legal Info -->
+    <copyright>DFKI</copyright>
+    <license>BSD 3-Clause</license>
+    <!-- Dependencies -->
     <depend package="representation/xtypes_generator" />
     <depend package="external/cpr" />
     <depend package="nlohmann-json" />
     <depend package="libspdlog" />
     <depend package="pybind11" />
     <depend package="pybind11_json" />
-    <stage>0</stage>
+    <!-- Additional Metadata -->
+    <stage>1</stage>
     <activity>active</activity>
     <keywords>
         <keyword>utilities</keyword>
