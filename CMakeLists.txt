@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.10)
 
 project(xdbi VERSION 2.0.0 DESCRIPTION "Database interface to the XTypes Database")
 include(${CMAKE_SOURCE_DIR}/cmake/xdbi-dependencies.cmake)
-
 # Export the library interface
 install(EXPORT xdbi-targets
 	NAMESPACE xdbi::
@@ -58,7 +57,6 @@ target_link_libraries(xdbi_cpp PUBLIC
   PkgConfig::cpr
   xtypes_generator::xtypes_generator_cpp
   Boost::system
-  spdlog::spdlog #for 18.04
   ${ADDITIONAL_DEPS}
 )
 
@@ -113,7 +111,6 @@ FILE(GLOB EXECUTABLE_SOURCE_FILES
 
 foreach(EXECUTABLE_SOURCE ${EXECUTABLE_SOURCE_FILES})
   string(REGEX REPLACE ".*/bin/" "" EXECUTABLE_NAME ${EXECUTABLE_SOURCE})
-
   if(${EXECUTABLE_SOURCE} MATCHES ".cpp$")
     string(REPLACE ".cpp" "" EXECUTABLE_NAME ${EXECUTABLE_NAME})
     message(STATUS "Building & installing executable ${EXECUTABLE_NAME} from ${EXECUTABLE_SOURCE}")
@@ -125,6 +122,7 @@ foreach(EXECUTABLE_SOURCE ${EXECUTABLE_SOURCE_FILES})
       $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external>
     )
     target_link_libraries(${EXECUTABLE_NAME} PUBLIC
+      fmt::fmt
       pthread
       xdbi_cpp
       xtypes_generator::xtypes_generator_cpp

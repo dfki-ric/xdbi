@@ -1,7 +1,8 @@
 # Find all dependencies
 find_package(PkgConfig REQUIRED)
+find_package(fmt REQUIRED)
 find_package(xtypes_generator REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
+find_package(spdlog REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
 pkg_check_modules(cpr REQUIRED IMPORTED_TARGET cpr)
 if(APPLE)
