@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(xdbi VERSION 2.0.0 DESCRIPTION "Database interface to the XTypes Database")
+
+if(APPLE)
+add_definitions(-std=c++17)
+MACRO(CMAKE_USE_FULL_RPATH install_rpath)
+    SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+    SET(CMAKE_INSTALL_RPATH ${install_rpath})
+    SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+ENDMACRO(CMAKE_USE_FULL_RPATH)
+CMAKE_USE_FULL_RPATH("${CMAKE_INSTALL_PREFIX}/lib")
+endif()
+
 include(${CMAKE_SOURCE_DIR}/cmake/xdbi-dependencies.cmake)
 
 # Export the library interface

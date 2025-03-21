@@ -6,6 +6,7 @@ find_package(Boost COMPONENTS system REQUIRED)
 pkg_check_modules(cpr REQUIRED IMPORTED_TARGET cpr)
 if(APPLE)
   pkg_check_modules(nlohmann_json REQUIRED IMPORTED_TARGET nlohmann_json)
+  find_package(fmt REQUIRED) # todo: check if this is fine for linux as well
 else(APPLE)
   find_package(nlohmann_json 3.10.5 REQUIRED)
   set(NLOHMANN_TARGET nlohmann_json::nlohmann_json)
