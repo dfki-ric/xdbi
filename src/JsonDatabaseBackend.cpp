@@ -58,7 +58,7 @@ namespace xdbi
         {
             info = nl::json::parse(ifs);
         }
-        catch (const std::runtime_error &e)
+        catch (const nl::json::parse_error &e)
         {
             LOGE("Couldn't parse " << fpath << ": " << e.what() << std::endl);
             ifs.close();
