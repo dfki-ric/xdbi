@@ -60,20 +60,20 @@ namespace xdbi
         }
         catch (const std::runtime_error &e)
         {
-            LOGE("Couldn't load: " << std::endl
-                                   << fpath);
-            throw;
+            LOGE("Couldn't parse " << fpath << ": " << e.what() << std::endl);
+            ifs.close();
+            return nl::json();
         }
         ifs.close();
 
         if (!info.contains("uri"))
         {
-            LOGE("info has no uri");
+            LOGE("JSON spec has no uri");
             return nl::json();
         }
         if (!info.contains("uuid"))
         {
-            LOGE("info has no uuid");
+            LOGE("JSON spec has no uuid");
             return nl::json();
         }
         if (info["uuid"].get<std::string>() != fname)
@@ -81,10 +81,9 @@ namespace xdbi
             LOGE("uuid " << info["uuid"].get<std::string>() << " != " << fname);
             return nl::json();
         }
-
         if (!info.contains("classname"))
         {
-            LOGE("info has no classname");
+            LOGE("JSON spec has no classname");
             return nl::json();
         }
         if (!classname.empty() && info["classname"].get<std::string>() != classname)
