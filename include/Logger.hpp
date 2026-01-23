@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <sstream>
 #include <spdlog/spdlog.h>
 #include <spdlog/async.h>
